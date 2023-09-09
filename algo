@@ -1,0 +1,58 @@
+# Update the algorithm to account for the condition that the number of cards should be between 2-4
+def evaluate_credit_card_application(income, credit_score, num_cards):
+    # Initialize variables for the scores and recommendation
+    income_score = 0
+    credit_score_component = 0
+    cards_score = 0
+    total_score = 0
+    recommendation = ""
+    additional_notes = []
+    
+    # Check if income is below the required 20,000 USD
+    if income < 20000:
+        return "Decline", "Income must be at least 20,000 USD."
+    
+    # Calculate Income Score
+    income_score = (income / 20000) * 25
+    if income_score > 25:  # Cap the income score to 25
+        income_score = 25
+    
+    # Check if credit score is below the minimum required 725
+    if credit_score < 725:
+        return "Decline", "Credit Score must be at least 725."
+    
+    # Calculate Credit Score Component
+    credit_score_component = ((credit_score - 725) / (780 - 725)) * 50
+    if credit_score_component > 50:  # Cap the credit score component to 50
+        credit_score_component = 50
+    
+    # Calculate Cards Score
+    if num_cards >= 2 and num_cards <= 4:
+        cards_score = 25  # Ideal condition
+    else:
+        cards_score = 0  # Not ideal
+        additional_notes.append("Number of cards should be between 2-4.")
+    
+    # Calculate Total Score
+    total_score = income_score + credit_score_component + cards_score
+    
+    # Generate Recommendation based on Total Score
+    if total_score >= 90:
+        recommendation = "Approve"
+    else:
+        recommendation = "Decline"
+        additional_notes.append("Total Score below threshold.")
+    
+    return recommendation, ", ".join(additional_notes)
+
+# Re-test the algorithm with the same example cases
+results_updated = []
+for case in test_cases:
+    recommendation, notes = evaluate_credit_card_application(case["income"], case["credit_score"], case["num_cards"])
+    results_updated.append({
+        "Test Case": case,
+        "Recommendation": recommendation,
+        "Notes": notes
+    })
+
+results_updated
